@@ -60,7 +60,10 @@ function getMetadata(product) {
             maxRetries: 5,
         });
         try {
-            const resp = yield http.getJson(`${releasesUrl()}/${product}/index.json`);
+            const resp = yield http.getJson(`${releasesUrl()}/${product}/index.json`, {
+                Accept: `application/vnd+hashicorp.releases-api.v1+json`,
+                'Content-Type': `application/vnd+hashicorp.releases-api.v1+json`,
+            });
             return resp.result || undefined;
         }
         catch (err) {
@@ -178,8 +181,7 @@ function getBinary(product, configuredVersion) {
         // Extract the zip
         const extractedPath = yield tc.extractZip(toolPath);
         // Installs into the tool cachedir
-        const dir = yield tc.cacheDir(extractedPath, product, version.version, os_1.default.arch());
-        return dir;
+        return yield tc.cacheDir(extractedPath, product, version.version, os_1.default.arch());
     });
 }
 exports.getBinary = getBinary;
